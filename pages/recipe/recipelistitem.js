@@ -10,7 +10,6 @@ export default function RecipeListItem (props) {
         props.onClick();
         document.getElementById(`rli${props.id}`)?.classList.add("selected");
         setSelectedRecipe(props.recipe);
-        console.log(props.recipe);
     }
     
     return (

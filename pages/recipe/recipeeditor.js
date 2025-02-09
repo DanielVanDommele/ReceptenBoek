@@ -89,6 +89,26 @@ export default function RecipeEditor() {
         editingRecipe.dietOrAllergies.NutsFree = e.target.checked;
     }
 
+    function addCookingInstructionLine() {
+        editingRecipe.instructions.push("");
+    }
+    
+    function addIngredient() {
+        editingRecipe.ingredients.push({
+            type: "",
+            qty: 0,
+            unit: ""
+        })        
+    }
+
+    function editIngredient(ingredient, index) {
+        editingRecipe.ingredients[index] = ingredient;
+    }
+
+    function deleteIngredient(index) {
+        editingRecipe.ingredients.splice(index, 1);
+    }
+
     function deleteRecipe() {
         fetch("/api/recipes", {
             method: 'DELETE',
@@ -167,8 +187,8 @@ export default function RecipeEditor() {
                     <div
                         className="ingredients-container">
                         <div className="caption">Ingrediënten:</div>
-                        { editingRecipe.ingredients.map((ingr, index) => <IngredientEdit key={index} type={ingr.type} unit={ingr.unit} qty={ingr.qty} />) }
-                        <AddButtonIngredient />
+                        { editingRecipe.ingredients.map((ingr, index) => <IngredientEdit key={index} ingredient={ingr} index={index} onEdit={editIngredient} onDelete={deleteIngredient} />) }
+                        <AddButtonIngredient onClick={addIngredient} />
                     </div>
                 </div>
                 <br />
@@ -191,7 +211,7 @@ export default function RecipeEditor() {
                     className="instructions">
                     <div className="caption">Bereiding:</div>
                     { editingRecipe.instructions.map((ins, idx) => <div key={idx}><input id={`ins_${idx}`} type="text" size="120" className="recipe-edit-field input-broad" defaultValue={ins} onChange={e => editInstruction(e, idx)} /></div>) }
-                    <AddButtonIngredient />
+                    <AddButtonIngredient onClick={addCookingInstructionLine} />
                 </div>
             </div>
             );

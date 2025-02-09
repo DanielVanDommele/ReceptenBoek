@@ -1,14 +1,21 @@
 import DeleteButton from "../../button/deletebutton.js"
 
 export default function IngredientEdit (props) {
-    function onEditType() {
-        console.log('onEditType', arguments);
+    
+    let ingredient = props.ingredient;
+    let index = props.index;
+    
+    function onEditType(e) {
+        ingredient.type = e.target.value;
+        props.onEdit(ingredient, index);
     }    
-    function onEditQty() {
-        console.log('onEditQty', arguments);
+    function onEditQty(e) {
+        ingredient.qty = e.target.value;
+        props.onEdit(ingredient, index);
     }     
-    function onEditUnit() {
-        console.log('onEditUnit', arguments);
+    function onEditUnit(e) {
+        ingredient.unit = e.target.value;
+        props.onEdit(ingredient, index);
     }        
     return (
         <div 
@@ -18,7 +25,7 @@ export default function IngredientEdit (props) {
                 name="ingredientType"
                 className="recipe-edit-field"
                 size="20"
-                value={props.type}
+                defaultValue={ingredient.type}
                 onChange={onEditType} />:
                 <span>&nbsp;&nbsp;</span>
             <input
@@ -26,7 +33,7 @@ export default function IngredientEdit (props) {
                 name="ingredientQuantity"
                 className="recipe-edit-field num-input"
                 size="3"
-                value={props.qty || ''}
+                defaultValue={ingredient.qty || ''}
                 onChange={onEditQty} />
                 <span>&nbsp;&nbsp;</span>
             <input
@@ -34,9 +41,9 @@ export default function IngredientEdit (props) {
                 name="ingredientUnit"
                 className="recipe-edit-field"
                 size="8"
-                value={props.unit}
+                defaultValue={ingredient.unit}
                 onChange={onEditUnit} />
-            <DeleteButton />
+            <DeleteButton onClick={() => props.onDelete(index)} />
         </div>
     );
 };

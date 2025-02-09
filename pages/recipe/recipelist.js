@@ -16,7 +16,6 @@ export default function RecipeList () {
             .then(response => response.text())
             .then(JSON.parse)
             .then(data => {
-                console.log('after fetch', data);
                 data.recipes.sort(recipeSort);
                 setRecipeData(data.recipes);
                 if (data.recipes.length > 0) {

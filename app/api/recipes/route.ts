@@ -8,8 +8,9 @@ export async function GET() {
         });
 }
 
-export async function POST(recipe) {
-    recipes.recipes.push(recipe);
+export async function POST(request: Request) {
+    const reqRecipe = await request.json();
+    recipes.recipes.push(reqRecipe);
     return new NextResponse(JSON.stringify({ "result": "ok" }), {
         status: 200,
     });

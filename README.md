@@ -25,11 +25,10 @@ The details of a recipe match the requirements as described in the assessment; h
 
 The following had yet to be implented:
 * Using the Ingredient REST api, although the way I set up storing the recipes made it obsolete;
-* Adding a recipe
-* Adding an ingredient
-* Adding a cooking instruction line
-* Deleting an ingredient
-* Deleting a cooking instruction line
+* Adding an ingredient (there is code but the ui isn't updated)
+* Adding a cooking instruction line (there is code but the ui isn't updated)
+* Deleting an ingredient (there is code but the ui isn't updated)
+* Deleting a cooking instruction line 
 * confirmation for deleting an ingredient or recipe
 * warning for navigating to other recipe without saving modifications first
 * a name prompt for adding a new recipe (instead the recipe is created with the temporary name "Nieuw recept")

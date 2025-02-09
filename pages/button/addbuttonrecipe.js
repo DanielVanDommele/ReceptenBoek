@@ -1,6 +1,6 @@
-export default function AddButtonRecipe () {
+export default function AddButtonRecipe (props) {
     return (
-            <div className="button" title="Recept toevoegen">
+            <div className="button" title="Recept toevoegen" onClick={props.onClick}>
                 <svg fill="none" viewBox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <circle cx="20" cy="20" r="10" stroke="#FFFFFF" strokeWidth="2" />
