@@ -15,29 +15,31 @@ export async function POST(recipe) {
     });
 }
 
-export async function PUT(id: string, recipe) {
-    const index = recipes.recipes.findIndex(r => r.id == id);
+export async function PUT(request: Request) {
+    const reqRecipe = await request.json();
+    const index = recipes.recipes.findIndex(r => r.id == reqRecipe.id);
     if (index >= 0) {
-        recipes.recipes[index] = recipe;
-        return new NextResponse(JSON.stringify({ "result": "ok" }), {
+        recipes.recipes[index] = reqRecipe;
+        return new NextResponse(JSON.stringify({ "result": "ok", "index": index }), {
             status: 200,
         });
     } else {
-        return new NextResponse(JSON.stringify({ "result": "error" }), {
+        return new NextResponse(JSON.stringify({ "result": "error", "index": index }), {
             status: 404,
         });
     }
 }
 
-export async function DELETE(id: string) {
+export async function DELETE(request: Request) {
+    const id = await request.text();
     const index = recipes.recipes.findIndex(r => r.id == id);
     if (index >= 0) {
         recipes.recipes.splice(index, 1);
-        return new NextResponse(JSON.stringify({ "result": "ok" }), {
+        return new NextResponse(JSON.stringify({ "result": "ok", "index": index, "id": id }), {
             status: 200,
         });
     } else {
-        return new NextResponse(JSON.stringify({ "result": "error" }), {
+        return new NextResponse(JSON.stringify({ "result": "error", "index": index, "id": id }), {
             status: 404,
         });
     }

@@ -26,7 +26,13 @@ export default function RecipeViewer () {
     }
     
     function clickDeleteRecipe() {
-        
+        fetch("/api/recipes", {
+            method: 'DELETE',
+            body: selectedRecipe.id
+        })
+        .then(() => {
+            document.dispatchEvent(new CustomEvent('RequestReloadList'));
+        });
     }
 
     if (selectedRecipe == null) {

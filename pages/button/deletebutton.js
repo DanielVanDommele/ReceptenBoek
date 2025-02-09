@@ -1,6 +1,6 @@
-export default function DeleteButton () {
+export default function DeleteButton (props) {
     return (
-            <div className="button" title="Verwijderen">
+            <div className="button" title="Verwijderen" onClick={props.onClick}>
                 <svg fill="none" viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <circle cx="10" cy="10" r="8" stroke="#FF0000" strokeWidth="2" />

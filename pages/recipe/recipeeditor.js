@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { EditModeContext, SelectedRecipeContext } from "../../app/context";
 
 import Image from 'next/image';
@@ -45,46 +45,71 @@ export default function RecipeEditor() {
     function clickCancel() {
         setEditMode(false);
     }
-    
+
+    function clickSave() {
+        storeRecipe(editingRecipe);
+        setSelectedRecipe(editingRecipe);
+        setEditMode(false);
+    }
+
     function toggleFavourite() {
-        selectedRecipe.favourite = !selectedRecipe.favourite;
+        editingRecipe.favourite = !selectedRecipe.favourite;
     }
 
     
-    function editTitle() {
-        console.log("editTitle", arguments);
+    function editTitle(e) {
+        editingRecipe.title = e.target.value;
     }
     
-    function editInstruction() {
-        console.log("editInstruction", arguments);
-        //editingRecipe.instructions[index] = 
+    function editInstruction(e, index) {
+        editingRecipe.instructions[index] = e.target.value;
     }
     
-    function editServings() {
-        console.log("editServings", arguments);
+    function editServings(e) {
+        editingRecipe.serving = e.target.value;
     }
     
-    function editDuration() {
-        console.log("editDuration", arguments);
+    function editDuration(e) {
+        editingRecipe.durationMinutes = e.target.value;
     }
     
-    function toggleVegetarian() {
-        selectedRecipe.dietOrAllergies.Vegetarian = !selectedRecipe.dietOrAllergies.Vegetarian;
+    function toggleVegetarian(e) {
+        editingRecipe.dietOrAllergies.Vegetarian = e.target.checked;
     }
-    function toggleVegan() {
-        selectedRecipe.dietOrAllergies.Vegan = !selectedRecipe.dietOrAllergies.Vegan;
+    function toggleVegan(e) {
+        editingRecipe.dietOrAllergies.Vegan = e.target.checked;
     }    
-    function toggleGlutenfree() {
-        selectedRecipe.dietOrAllergies.GlutenFree = !selectedRecipe.dietOrAllergies.GlutenFree;
+    function toggleGlutenfree(e) {
+        editingRecipe.dietOrAllergies.GlutenFree = e.target.checked;
     }    
-    function toggleLactosefree() {
-        selectedRecipe.dietOrAllergies.LactoseFree = !selectedRecipe.dietOrAllergies.LactoseFree;
+    function toggleLactosefree(e) {
+        editingRecipe.dietOrAllergies.LactoseFree  = e.target.checked;
     }    
-    function toggleNutsfree() {
-        selectedRecipe.dietOrAllergies.NutsFree = !selectedRecipe.dietOrAllergies.NutsFree;
+    function toggleNutsfree(e) {
+        editingRecipe.dietOrAllergies.NutsFree = e.target.checked;
     }
-        
-    if (!selectedRecipe) {
+
+    function deleteRecipe() {
+        fetch("/api/recipes", {
+            method: 'DELETE',
+            body: editingRecipe.id
+        })
+        .then(() => {
+            document.dispatchEvent(new CustomEvent('RequestReloadList'));
+        });
+    }
+
+    function storeRecipe() {
+        fetch("/api/recipes", {
+            method: 'PUT',
+            body: JSON.stringify(editingRecipe)
+        })
+        .then(() => {
+            document.dispatchEvent(new CustomEvent('RequestReloadList'));
+        });
+    }
+
+    if (!editingRecipe) {
         return (<div
         className="recipe-viewer"></div>);
     }
@@ -98,16 +123,16 @@ export default function RecipeEditor() {
                         type="text"
                         size="50"
                         className="recipe-edit-field title-edit"
-                        value={selectedRecipe.title}
+                        defaultValue={editingRecipe.title}
                         onChange={editTitle} />
             
-                    <SaveButton />
+                    <SaveButton onClick={clickSave} />
                     <CancelButton onClick={clickCancel} />
                     <Spacer size="25" />
-                    <DeleteButton />
+                    <DeleteButton onClick={deleteRecipe} />
                 </div>
                 <br />
-                <input type="checkbox" name="fav" checked={selectedRecipe.favourite} onChange={toggleFavourite} /><label foe="fav">Markeren als favoriet</label>
+                <input type="checkbox" name="fav" defaultChecked={editingRecipe.favourite} onChange={toggleFavourite} /><label foe="fav">Markeren als favoriet</label>
                 <br />
                 <br />
                 <div>
@@ -116,7 +141,7 @@ export default function RecipeEditor() {
                         type="text"
                         size="3"
                         className="recipe-edit-field num-input"
-                        value={selectedRecipe.serving}
+                        defaultValue={editingRecipe.serving}
                         onChange={editServings} />
                 </div>
                 <div>
@@ -125,7 +150,7 @@ export default function RecipeEditor() {
                         type="text"
                         size="3"
                         className="recipe-edit-field num-input"
-                        value={selectedRecipe.durationMinutes}
+                        defaultValue={editingRecipe.durationMinutes}
                         onChange={editDuration} /> minuten</div>
                 <br />
                 <div
@@ -133,7 +158,7 @@ export default function RecipeEditor() {
                     <div
                         className="image-container">
                         <Image
-                            src={decodeURIComponent(selectedRecipe.image)}
+                            src={decodeURIComponent(editingRecipe.image)}
                             alt=""
                             width={250}
                             height={250}
@@ -142,7 +167,7 @@ export default function RecipeEditor() {
                     <div
                         className="ingredients-container">
                         <div className="caption">Ingrediënten:</div>
-                        { selectedRecipe.ingredients.map((ingr, index) => <IngredientEdit key={index} type={ingr.type} unit={ingr.unit} qty={ingr.qty} />) }
+                        { editingRecipe.ingredients.map((ingr, index) => <IngredientEdit key={index} type={ingr.type} unit={ingr.unit} qty={ingr.qty} />) }
                         <AddButtonIngredient />
                     </div>
                 </div>
@@ -150,22 +175,22 @@ export default function RecipeEditor() {
                 <div
                     className="instructions">
                     <div className="caption">Dieet- en allergie-informatie:</div>
-                    <input type="checkbox" name="vegetarian" checked={selectedRecipe.dietOrAllergies.Vegetarian} onChange={toggleVegetarian} /><label foe="vegetarian">Vegetarisch</label>
+                    <input type="checkbox" name="vegetarian" defaultChecked={editingRecipe.dietOrAllergies.Vegetarian} onChange={toggleVegetarian} /><label foe="vegetarian">Vegetarisch</label>
                     <br />
-                    <input type="checkbox" name="vegan" checked={selectedRecipe.dietOrAllergies.Vegan} onChange={toggleVegan} /><label foe="vegetarian">Vegan</label>
+                    <input type="checkbox" name="vegan" defaultChecked={editingRecipe.dietOrAllergies.Vegan} onChange={toggleVegan} /><label foe="vegetarian">Vegan</label>
                     <br />
-                    <input type="checkbox" name="glutenfree" checked={selectedRecipe.dietOrAllergies.GlutenFree} onChange={toggleGlutenfree} /><label foe="vegetarian">Glutenvrij</label>
+                    <input type="checkbox" name="glutenfree" defaultChecked={editingRecipe.dietOrAllergies.GlutenFree} onChange={toggleGlutenfree} /><label foe="vegetarian">Glutenvrij</label>
                     <br />
-                    <input type="checkbox" name="lactosefree" checked={selectedRecipe.dietOrAllergies.LactoseFree} onChange={toggleLactosefree} /><label foe="vegetarian">Lactosevrij</label>
+                    <input type="checkbox" name="lactosefree" defaultChecked={editingRecipe.dietOrAllergies.LactoseFree} onChange={toggleLactosefree} /><label foe="vegetarian">Lactosevrij</label>
                     <br />
-                    <input type="checkbox" name="nutsfree" checked={selectedRecipe.dietOrAllergies.NutsFree} onChange={toggleNutsfree} /><label foe="vegetarian">Notenvrij</label>
+                    <input type="checkbox" name="nutsfree" defaultChecked={editingRecipe.dietOrAllergies.NutsFree} onChange={toggleNutsfree} /><label foe="vegetarian">Notenvrij</label>
                     <br />
                 </div>
                 <br />
                 <div
                     className="instructions">
                     <div className="caption">Bereiding:</div>
-                    { selectedRecipe.instructions.map((ins, idx) => <div key={idx}><input id={`ins_${idx}`} type="text" size="120" className="recipe-edit-field input-broad" value={ins} onChange={editInstruction(ins, idx)} /></div>) }
+                    { editingRecipe.instructions.map((ins, idx) => <div key={idx}><input id={`ins_${idx}`} type="text" size="120" className="recipe-edit-field input-broad" defaultValue={ins} onChange={e => editInstruction(e, idx)} /></div>) }
                     <AddButtonIngredient />
                 </div>
             </div>
