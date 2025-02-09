@@ -33,5 +33,6 @@ The following had yet to be implented:
 * confirmation for deleting an ingredient or recipe
 * warning for navigating to other recipe without saving modifications first
 * a name prompt for adding a new recipe (instead the recipe is created with the temporary name "Nieuw recept")
+* Written out Test cases 
 
 REST implementation exists for these operations, where the cooking instructions do not have seperate REST api.
